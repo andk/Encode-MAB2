@@ -1,0 +1,10 @@
+Agg (a with _ above) s (i with ^ above)
+<debugraw>Agg&amp;#x101;s&amp;#x131;&amp;#x302;, Y&amp;#xf4;s&amp;#x113;f</debugraw>
+                  |           |          |
+                  |           |          COMBINING CIRCUMFLEX ACCENT
+                  |           LATIN SMALL LETTER DOTLESS I
+                  LATIN SMALL LETTER A WITH MACRON
+
+i with circumflex should be
+
+00EE;LATIN SMALL LETTER I WITH CIRCUMFLEX;Ll;0;L;0069 0302;;;;N;LATIN SMALL LETTER I CIRCUMFLEX;;00CE;;00CE
