@@ -1,12 +1,12 @@
 # -*- coding: utf-8; mode: cperl -*-
 use strict;
 # Adjust the number here!
-use Test::More tests => 41;
+use Test::More tests => 38;
 use File::Basename;
 
-use_ok('Tie::MAB2::Dualdb');
-use_ok('Tie::MAB2::Dualdb::Recno');
-use_ok('Tie::MAB2::Dualdb::Id');
+use Tie::MAB2::Dualdb;
+use Tie::MAB2::Dualdb::Recno;
+use Tie::MAB2::Dualdb::Id;
 # Add more test here!
 
 use BerkeleyDB qw( DB_CREATE DB_INIT_MPOOL DB_INIT_CDB DB_NEXT DB_RDONLY );
