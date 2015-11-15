@@ -34,7 +34,6 @@ sub TIEHASH {
   #############################################^^^^^^^ did simply not work with RDONLY
   unless ($db) {
     $db = tie(%offset, "BerkeleyDB::Hash", -Filename => "$args{file}.bdbhash", -Flags => DB_CREATE, -Mode => 0644) or die "Could not tie $args{file}.bdbhash: $!";
-    warn "Creating ID index";
     local($/) = "\n";
     my $Loffset = 0;
     local($|) = 1;

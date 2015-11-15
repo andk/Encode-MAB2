@@ -44,7 +44,6 @@ sub TIEHASH {
               -Filename => "$args{file}.bdbrvi",
               -Flags => DB_CREATE,
               -Mode => 0644) or die "Could not tie $args{file}.bdbhash: $!";
-    warn "Creating RVI index";
     local($/) = "\n";
     local($|) = 1;
     my $recno = 0;

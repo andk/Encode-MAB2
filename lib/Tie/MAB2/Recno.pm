@@ -49,7 +49,6 @@ sub TIEARRAY {
   #############################################^^^^^^^ did simply not work with RDONLY
   unless ($db) {
     $db = tie(@offset, "BerkeleyDB::Recno", -Filename => "$args{file}.bdbrecno", -Flags => DB_CREATE, -Mode => 0644) or die "Could not tie: $!";
-    warn "Creating offset index";
     local($/) = $self->{RS};
     my $Loffset = 0;
     local($|) = 1;
