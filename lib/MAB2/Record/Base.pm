@@ -210,7 +210,7 @@ sub parsedoc {
   my $self = shift;
   my $strdocs = shift;
 
-  $strdocs =~ s/ ^ .*?\n ( ?=\d ) //sx; # remove header
+  $strdocs =~ s/ ^ .*?\n (?=\d ) //sx; # remove header
 
   my @docs = $strdocs =~ /\G(\d.*?\n)(?=\d|$)/sgc; # split into subdocuments
   my @kennungdocs;
