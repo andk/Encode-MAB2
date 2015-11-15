@@ -1,3 +1,5 @@
+^Encode-MAB2-
+\.git
 lib/Encode/memo
 \.tar\.gz$
 MAB2table\.(bs|c|o|xs)
@@ -9,3 +11,6 @@ t/kafka\.mab\.bdb
 ^blib/
 ^Makefile$
 ^pm_to_blib$
+^MYMETA\.json
+^MYMETA\.yml
+^SIGNATURE\.tmp

@@ -38,3 +38,4 @@ t/kafka.mab
 t/rvi.t
 t/segmentname.t
 META.yml                                 Module meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)

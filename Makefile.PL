@@ -38,11 +38,60 @@ for my $d (@INC){
 ($encode_h) = sort {$encode_h{$b} <=> $encode_h{$a}} keys %encode_h;
 print "encode.h is at $encode_h\n";
 
+eval { require File::Spec; };
+my $HAVE_FILE_SPEC = !$@;
+
+my $version_diff = 0; # we'll have to die if this becomes true
+$::is_trial = 1;
+my $version_from;
+if ($HAVE_FILE_SPEC) {
+  $version_from = File::Spec->catfile(qw(lib Encode MAB2.pm));
+} else {
+  $version_from = q(lib/Encode/MAB2.pm);
+}
+my $version = MM->parse_version($version_from);
+{
+  my $version_set_manually = 1;
+  if ($ARGV[0] && $ARGV[0] eq "--setversion") {
+    die "Your perl is a bit dated[$]].\nDo not make a release with it\n" if $] < 5.008;
+    die "Your MakeMaker is a bit dated[$ExtUtils::MakeMaker::VERSION].\nDo not make a release with it\n"
+        if $ExtUtils::MakeMaker::VERSION < 6.4502;
+    die "Your MakeMaker doesn't do the sign woodoo" unless
+        MM->can("signature_target");
+    shift @ARGV;
+    my $st;
+    local $ENV{LANG} = "C";
+    my $dirty = `git status --porcelain --untracked-files=no`;
+    die "Not everything checked in or out?\n====\n$dirty====\n" if $dirty;
+
+    if ($version_set_manually) {
+      # we must control that the VERSION in this .pm is the same as in the Makefile
+      open my $fh, "make the-release-name|" or die;
+      my $have_version;
+      while (<$fh>) {
+        next unless /^version\s+([\d\._]+(?:-TRIAL)?)/;
+        $have_version = $1;
+      }
+      die "could not determine current version from Makefile" unless $have_version;
+      eval q{
+      no warnings "numeric";
+      my $dsv = $Encode::MAB2::VERSION;
+      if ($dsv != $have_version) {
+        warn "Not equal: E:M:VERSION[$dsv] Makefile version[$have_version]";
+        $version_diff = 1;
+      }
+};
+      die $@ if $@;
+    }
+    exit unless $version_diff;
+  }
+}
+
 WriteMakefile(
               INC		=> "-I$encode_h",
 	      NAME		=> 'Encode::MAB2table',
-	      DISTNAME		=> 'MAB2',
-	      VERSION_FROM	=> "lib/Encode/MAB2.pm",
+	      DISTNAME		=> 'Encode-MAB2',
+	      VERSION           => $version,
 	      OBJECT		=> '$(O_FILES)',
 	      'dist'		=> {
 		  DIST_DEFAULT => 'all metafile sign tardist',
@@ -55,9 +104,64 @@ WriteMakefile(
                            },
 	      # OS 390 winges about line numbers > 64K ???
 	      XSOPT => '-nolinenumbers',
+              ($ExtUtils::MakeMaker::VERSION >= 6.4502 ?
+               (META_ADD => {
+                             resources => {
+                                 repository => "git://github.com/andk/Encode-MAB2.git",
+                             },
+                             keywords => ['German library metadata'],
+                            }) : ()),
 	      );
 
 package MY;
+sub distsignature {
+    my($self) = shift;
+    my $ret = $self->SUPER::distsignature_target(@_);
+    $ret =~ s|cpansign|\`dirname \$(PERL)\`/cpansign|g;
+    return $ret;
+}
+
+sub dist {
+    my($self) = shift;
+    my $ret = $self->SUPER::dist(@_);
+    $ret =~ s|(DISTVNAME.*)|$1-TRIAL|m if $::is_trial;
+    return $ret;
+}
+
+sub dist_test {
+  return q{
+# if we depend on $(DISTVNAME).tar$(SUFFIX), then the rest of the
+# Makefile breaks our intent to NOT remake dist
+disttest :
+	rm -rf $(DISTVNAME)
+	tar xvzf $(DISTVNAME).tar$(SUFFIX)
+	cd $(DISTVNAME) && $(ABSPERLRUN) Makefile.PL
+	cd $(DISTVNAME) && $(MAKE) $(PASTHRU)
+	cd $(DISTVNAME) && $(MAKE) test $(PASTHRU)
+
+distdir ::
+	touch $(DISTVNAME)/SIGNATURE && $(CP) $(DISTVNAME)/SIGNATURE ./SIGNATURE
+	$(CP) $(DISTVNAME)/META.yml  ./META.yml
+	$(CP) $(DISTVNAME)/META.json  ./META.json
+	$(CP) $(DISTVNAME)/MANIFEST  ./MANIFEST
+
+}
+}
+
+sub distdir {
+  my $self = shift;
+  my $out = $self->SUPER::distdir;
+  $out =~ s/distdir :/distdir ::/g;
+  return $out;
+}
+
+# dist_dir was the name in very old MakeMaker as of 5.005_04
+sub dist_dir {
+  my $self = shift;
+  my $out = $self->SUPER::dist_dir;
+  $out =~ s/distdir :/distdir ::/g;
+  return $out;
+}
 
 sub post_initialize
 {
@@ -177,12 +281,47 @@ sub postamble
 	close(FILELIST);
     }
 
-    # DONE with Encode's postamble, now for my own:
-    $str .= q{
+    $str .=   q{
+# the subdirs on MY OWN BOX are allowed here (only used for make dist!)
+OKDIRS=benchmark|bin|blib|lib|scripts|t
+
+verify-no-subdir:
+	@$(PERL) -e 'my$$s=join",",grep{!/^($(OKDIRS))\z/x&&-d($$_)}glob"*";' \
+		-e 'die"unexpected dir:$$s"if$$s'
+
+verify-changes-date:
+	@$(PERL) -ne 'BEGIN{my@t=(localtime)[5,4,3];$$t[0]+=1900;$$t[1]++;$$t=sprintf"%04d-%02d-%02d",@t}' \
+		-e '$$ok++,exit if /^$$t\s/; END{die "Alert: did not find <$$t> in Changes file" unless $$ok}' Changes
+
+verify-changes-version:
+	@$(PERL) -ne '$$ok++,exit if /\b$(VERSION)\b/; END{die "Alert: did not find <$(VERSION)> in Changes file" unless $$ok}' Changes
+
+setversion:
+	$(PERL) Makefile.PL --setversion
+
+README: lib/Encode/MAB2.pm Makefile
+	-test -r $@ && chmod +w $@
+	-$(PERL) -MPod::Text -e 'Pod::Text->new->parse_from_file(\*ARGV)' lib/Encode/MAB2.pm > $@
+
+the-release-name :
+	$(NOECHO) $(ECHO) 'version ' $(VERSION)
+	$(NOECHO) $(ECHO) 'release-name ' $(DISTVNAME).tar$(SUFFIX)
+
+release :: disttest
+	git tag -m 'This is $(VERSION)' "$(VERSION)"
+	ls -l $(DISTVNAME).tar$(SUFFIX)
+	rm -rf $(DISTVNAME)
+	$(NOECHO) $(ECHO) '#### Suggested next steps:'
+	$(NOECHO) $(ECHO) '  git push --tags origin master'
+
 sign ::
 	cpansign -s
 
+howto-release:
+	@$(ECHO) manually set version in both MAB2.pm and MAB2table.pm, edit ChangeLog
+	@$(ECHO) make dist \&\& make release
 };
+
 
     return $str;
 }
