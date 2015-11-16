@@ -29,7 +29,7 @@ sub TIEARRAY {
   my $env = BerkeleyDB::Env
       ->new(
             Home => $dir,
-            Flags => $flags,
+            Flags => $flags|DB_INIT_MPOOL,
            )
           or die "Could not create environment: $BerkeleyDB::Error; home[$dir]flags[$args{flags}]";
   $self->{ENV} = $env;

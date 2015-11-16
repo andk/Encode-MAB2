@@ -19,7 +19,7 @@ my $dualdb = "t/kafka.dualdb";
   # Create the database with one record
 
   my @tie;
-  my $flags = DB_CREATE|DB_INIT_MPOOL; # |DB_INIT_CDB ;
+  my $flags = DB_CREATE;
   tie(@tie,
       "Tie::MAB2::Dualdb",
       filename => $dualdb,
@@ -92,7 +92,7 @@ my $dualdb = "t/kafka.dualdb";
   # delete that one record
 
   my @tie;
-  my $flags = DB_CREATE|DB_INIT_MPOOL; # |DB_INIT_CDB ;
+  my $flags = DB_CREATE;
   tie(@tie,
       "Tie::MAB2::Dualdb",
       filename => $dualdb,
@@ -113,7 +113,7 @@ unlink $dualdb;
   # Als das funktionierte, rief einer laut: geil!
 
   my(@tie,%tie);
-  my $flags = DB_CREATE|DB_INIT_MPOOL; # |DB_INIT_CDB ;
+  my $flags = DB_CREATE;
   my $tied_array = tie(@tie,
                        "Tie::MAB2::Dualdb",
                        filename => $dualdb,
