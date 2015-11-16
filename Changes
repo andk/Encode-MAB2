@@ -1,4 +1,24 @@
+2015-11-15  k  <andk@cpan.org>
+
+	* release 0.07-TRIAL
+
+	* moves flag DB_INIT_MPOOL from the tie() in the test script to
+	the Dualdb environment setup (compatibility fix for BerkeleyDB >
+	0.20)
+
+	* fixes #108845: In '(?...)', the '(' and '?' must be adjacent in
+	regex; in other words: perl 5.22 broke my regex when
+	https://rt.perl.org/Public/Bug/Display.html?id=117327 was fixed
+
+	* renames distribution fom MAB2 to Encode-MAB2
+
+	* renames ChangeLog file to Changes to match current conventions
+
+	* sources uploaded to https://github.com/andk/Encode-MAB2
+
 2003-10-10  Andreas Koenig  <andreas.koenig@anima.de>
+
+	* release 0.06
 
 	* Added copyright 2003
 
