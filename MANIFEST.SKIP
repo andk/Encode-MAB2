@@ -14,3 +14,4 @@ t/kafka\.mab\.bdb
 ^MYMETA\.json
 ^MYMETA\.yml
 ^SIGNATURE\.tmp
+^MANIFEST.bak

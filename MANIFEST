@@ -1,15 +1,9 @@
 Changes
-LICENCE
-MANIFEST			This list of files
-MANIFEST.SKIP
-Makefile.PL
-README
-SIGNATURE
 lib/Encode/MAB2.pm
 lib/Encode/MAB2table.pm
 lib/Encode/MAB2table.ucm
-lib/MAB2/Record/Base.pm
 lib/MAB2/Record/adressmab.txt
+lib/MAB2/Record/Base.pm
 lib/MAB2/Record/gkd.pm
 lib/MAB2/Record/gkdmab.txt
 lib/MAB2/Record/lokal.pm
@@ -22,20 +16,28 @@ lib/MAB2/Record/swd.pm
 lib/MAB2/Record/swdmab.txt
 lib/MAB2/Record/titel.pm
 lib/MAB2/Record/titelmab.txt
-lib/MAB2/Record/uptodate.pl     Script to check for uptodateness
-lib/Tie/MAB2/Id.pm
-lib/Tie/MAB2/Recno.pm
-lib/Tie/MAB2/RecnoViaId.pm
+lib/MAB2/Record/uptodate.pl	Script to check for uptodateness
 lib/Tie/MAB2/Dualdb.pm
 lib/Tie/MAB2/Dualdb/Id.pm
 lib/Tie/MAB2/Dualdb/Recno.pm
-t/MAB2.t
-t/MAB2table.t
+lib/Tie/MAB2/Id.pm
+lib/Tie/MAB2/Recno.pm
+lib/Tie/MAB2/RecnoViaId.pm
+LICENCE
+Makefile.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
+META.json			Module JSON meta-data (added by MakeMaker)
+META.yml			Module meta-data (added by MakeMaker)
+README
+SIGNATURE
+t/00module_versions_report.t
+t/00signature.t
 t/dualdb.t
 t/hegedus.mab
 t/hegedus.t
 t/kafka.mab
+t/MAB2.t
+t/MAB2table.t
 t/rvi.t
 t/segmentname.t
-META.yml                                 Module meta-data (added by MakeMaker)
-META.json                                Module JSON meta-data (added by MakeMaker)

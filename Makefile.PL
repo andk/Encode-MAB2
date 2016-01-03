@@ -94,7 +94,15 @@ WriteMakefile(
 	      VERSION           => $version,
 	      OBJECT		=> '$(O_FILES)',
 	      'dist'		=> {
-		  DIST_DEFAULT => 'all metafile sign tardist',
+                  DIST_DEFAULT => join(" ",
+                      "verify-no-subdir",
+                      "verify-changes-date",
+                      "metafile",
+                      "sign",
+                      "setversion",
+                      "all",
+                      "tardist",
+                  ),
 		  COMPRESS	=> 'gzip -9f',
 	      },
 	      # MAN3PODS	=> {},
@@ -308,14 +316,13 @@ the-release-name :
 	$(NOECHO) $(ECHO) 'release-name ' $(DISTVNAME).tar$(SUFFIX)
 
 release :: disttest
-	git tag -m 'This is $(VERSION)' "$(VERSION)"
 	ls -l $(DISTVNAME).tar$(SUFFIX)
 	rm -rf $(DISTVNAME)
 	$(NOECHO) $(ECHO) '#### Suggested next steps:'
+	$(NOECHO) $(ECHO) '  git tag -m "This is $(VERSION)" "$(VERSION)"'
 	$(NOECHO) $(ECHO) '  git push --tags origin master'
 
-sign ::
-	cpansign -s
+sign :: distsignature
 
 howto-release:
 	@$(ECHO) manually set version in both MAB2.pm and MAB2table.pm, edit ChangeLog
