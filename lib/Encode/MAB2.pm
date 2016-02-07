@@ -1,7 +1,7 @@
 package Encode::MAB2;
 
 use strict;
-our $VERSION = "0.08"; # must stay in sync with Encode::MAB2table
+our $VERSION = "0.09"; # must stay in sync with Encode::MAB2table
 
 use Encode ();
 use Encode::MAB2table;

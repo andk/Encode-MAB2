@@ -1,5 +1,5 @@
 package Encode::MAB2table;
-our $VERSION = "0.08"; # must stay in sync with Encode::MAB2
+our $VERSION = "0.09"; # must stay in sync with Encode::MAB2
 
 use Encode ();
 use XSLoader;

@@ -2,6 +2,9 @@
 
 	* release 0.09-TRIAL
 
+	* Fix packaging II: some intermediate files were contained in the
+	tarball
+
 2016-01-03  k  <andk@cpan.org>
 
 	* release 0.08-TRIAL

@@ -73,15 +73,17 @@ my $version = MM->parse_version($version_from);
         $have_version = $1;
       }
       die "could not determine current version from Makefile" unless $have_version;
-      eval q{
-      no warnings "numeric";
-      my $dsv = $Encode::MAB2::VERSION;
-      if ($dsv != $have_version) {
-        warn "Not equal: E:M:VERSION[$dsv] Makefile version[$have_version]";
+      open my $fh, "lib/Encode/MAB2.pm" or die;
+      my $mod_version;
+      while (<$fh>) {
+        next unless /^our \$VERSION = "([\d\._]+)"/;
+        $mod_version = $1;
+      }
+      die "could not determine current version from module" unless $mod_version;
+      unless ($mod_version == $have_version) {
+        warn "WARNING: not equal: VERSION[$mod_version] Makefile version[$have_version]";
         $version_diff = 1;
       }
-};
-      die $@ if $@;
     }
     exit unless $version_diff;
   }
