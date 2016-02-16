@@ -42,7 +42,7 @@ eval { require File::Spec; };
 my $HAVE_FILE_SPEC = !$@;
 
 my $version_diff = 0; # we'll have to die if this becomes true
-$::is_trial = 1;
+$::is_trial = 0;
 my $version_from;
 if ($HAVE_FILE_SPEC) {
   $version_from = File::Spec->catfile(qw(lib Encode MAB2.pm));

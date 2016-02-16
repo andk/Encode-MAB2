@@ -1,3 +1,7 @@
+2016-02-16  k  <andk@cpan.org>
+
+	* release 0.09, codewise identical to 0.09-TRIAL
+
 2016-02-07  k  <andk@cpan.org>
 
 	* release 0.09-TRIAL
@@ -23,7 +27,7 @@
 	regex; in other words: perl 5.22 broke my regex when
 	https://rt.perl.org/Public/Bug/Display.html?id=117327 was fixed
 
-	* renames distribution fom MAB2 to Encode-MAB2
+	* renames distribution from MAB2 to Encode-MAB2
 
 	* renames ChangeLog file to Changes to match current conventions
 
